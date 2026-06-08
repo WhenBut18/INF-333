@@ -6,45 +6,73 @@
 [ext_resource type="Texture2D" uid="uid://cmpbjsc7dabmh" path="res://Sprites/Jugador/PJDEMO.png" id="4_c4d3d"]
 [ext_resource type="Texture2D" uid="uid://kjuoeegyebqm" path="res://Sprites/Jugador/circulo.jpg" id="5_5huxk"]
 [ext_resource type="Texture2D" uid="uid://j2eu5i87nkgh" path="res://Sprites/Jugador/triangulo.jpg" id="6_7aqc3"]
+[ext_resource type="PackedScene" uid="uid://b66utulkgmusc" path="res://Escenas/NivelesBase/killzone.tscn" id="7_5huxk"]
 
 [node name="Node2D" type="Node2D" unique_id=1770357634]
 
-[node name="BloqueTerreno" parent="." unique_id=1855736786 instance=ExtResource("1_2b4nq")]
-position = Vector2(943, 1007)
-tamano_bloque = Vector2(1500, 120)
-textura_bloque = ExtResource("2_6wltk")
-
 [node name="BloqueTerreno2" parent="." unique_id=1381853893 instance=ExtResource("1_2b4nq")]
-position = Vector2(1474, 742)
-tamano_bloque = Vector2(200, 100)
+position = Vector2(1818, 830)
+tamano_bloque = Vector2(200, 500)
 textura_bloque = ExtResource("2_6wltk")
 
 [node name="BloqueTerreno3" parent="." unique_id=1780158801 instance=ExtResource("1_2b4nq")]
-position = Vector2(1103, 554)
-tamano_bloque = Vector2(200, 100)
+position = Vector2(1080, 300)
+tamano_bloque = Vector2(150, 600)
 textura_bloque = ExtResource("2_6wltk")
 
 [node name="BloqueTerreno4" parent="." unique_id=459140648 instance=ExtResource("1_2b4nq")]
-position = Vector2(1495, 359)
-tamano_bloque = Vector2(200, 100)
+position = Vector2(1083, 934)
+tamano_bloque = Vector2(150, 100)
 textura_bloque = ExtResource("2_6wltk")
 
 [node name="BloqueTerreno5" parent="." unique_id=1582018934 instance=ExtResource("1_2b4nq")]
-position = Vector2(231, 280)
-tamano_bloque = Vector2(100, 400)
+position = Vector2(200, 780)
+tamano_bloque = Vector2(400, 600)
 textura_bloque = ExtResource("2_6wltk")
 
 [node name="BloqueTerreno6" parent="." unique_id=1723342402 instance=ExtResource("1_2b4nq")]
-position = Vector2(548, 433)
-tamano_bloque = Vector2(400, 100)
+position = Vector2(689, 316)
+tamano_bloque = Vector2(300, 100)
 textura_bloque = ExtResource("2_6wltk")
 
+[node name="BloqueTerreno7" parent="." unique_id=1855736786 instance=ExtResource("1_2b4nq")]
+position = Vector2(1541, 930)
+tamano_bloque = Vector2(350, 300)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="BloqueTerreno8" parent="." unique_id=760295456 instance=ExtResource("1_2b4nq")]
+position = Vector2(1469, 498)
+tamano_bloque = Vector2(200, 300)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="BloqueTerreno9" parent="." unique_id=2145591389 instance=ExtResource("1_2b4nq")]
+position = Vector2(1745, 397)
+tamano_bloque = Vector2(350, 100)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="Area2D" parent="." unique_id=653097251 instance=ExtResource("7_5huxk")]
+position = Vector2(882, 1130)
+
+[node name="Area2D2" parent="." unique_id=1416521552 instance=ExtResource("7_5huxk")]
+position = Vector2(507, -50)
+
+[node name="Area2D3" parent="." unique_id=1624341404 instance=ExtResource("7_5huxk")]
+position = Vector2(1466, -50)
+
+[node name="Area2D5" parent="." unique_id=862966696 instance=ExtResource("7_5huxk")]
+position = Vector2(342, 420)
+dimensiones = Vector2(50, 50)
+
+[node name="Area2D4" parent="." unique_id=1113076124 instance=ExtResource("7_5huxk")]
+position = Vector2(-51, 408)
+dimensiones = Vector2(100, 1000)
+
 [node name="Chicle" parent="." unique_id=780736242 instance=ExtResource("3_d7a3n")]
-position = Vector2(970, 884)
+position = Vector2(168, 416)
 tamano_base = Vector2(100, 100)
 textura_base = ExtResource("4_c4d3d")
-tamano_cabeza = Vector2(70, 70)
+tamano_cabeza = Vector2(100, 100)
 textura_cabeza = ExtResource("5_5huxk")
-tamano_cola = Vector2(70, 70)
+tamano_cola = Vector2(100, 100)
 textura_cola = ExtResource("6_7aqc3")
-max_estiramiento = 1000.0
+max_estiramiento = 1500.0

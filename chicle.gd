@@ -35,12 +35,14 @@ extends CharacterBody2D
 		textura_cola = value
 		_actualizar_tamano()
 
+
 # ==========================================
 # ESTADOS Y PARÁMETROS DE JUEGO
 # ==========================================
 
 enum Estado { NORMAL, ESTIRANDO, CONTRAYENDO }
 var estado_actual = Estado.NORMAL
+var posicion_inicial: Vector2
 
 @export_group("Físicas y Movimiento")
 @export var velocidad_movimiento: float = 200.0
@@ -63,8 +65,12 @@ var direccion_cabeza: Vector2 = Vector2.ZERO
 @onready var cabeza = $CabezaArea
 @onready var colision_cabeza = $CabezaArea/CollisionShape2D
 @onready var sprite_cabeza = $CabezaArea/SpriteCabeza
+# Referencia dinámica a la colisión del detector de la base (puede ser nula antes del _ready)
+@onready var colision_detector_base = get_node_or_null("DetectorPeligroBase/CollisionShape2D")
 
 func _ready() -> void:
+	posicion_inicial = global_position
+	
 	if colision_base != null:
 		if colision_base.shape == null: colision_base.shape = RectangleShape2D.new()
 		elif not Engine.is_editor_hint(): colision_base.shape = colision_base.shape.duplicate()
@@ -72,6 +78,11 @@ func _ready() -> void:
 	if colision_cabeza != null:
 		if colision_cabeza.shape == null: colision_cabeza.shape = RectangleShape2D.new()
 		elif not Engine.is_editor_hint(): colision_cabeza.shape = colision_cabeza.shape.duplicate()
+		
+	# Sincronizamos e independizamos la colisión del detector de peligros de la base
+	if colision_detector_base != null:
+		if colision_detector_base.shape == null: colision_detector_base.shape = RectangleShape2D.new()
+		elif not Engine.is_editor_hint(): colision_detector_base.shape = colision_detector_base.shape.duplicate()
 			
 	_actualizar_tamano()
 	
@@ -93,6 +104,14 @@ func _actualizar_tamano() -> void:
 				
 	if colision_base and colision_base.shape is RectangleShape2D:
 		colision_base.shape.size = tamano_base
+		
+	# Actualizar la colisión del DetectorPeligroBase
+	# Usamos get_node_or_null aquí por si la función es llamada desde el Inspector antes de que exista la variable @onready
+	var col_detector = get_node_or_null("DetectorPeligroBase/CollisionShape2D")
+	if col_detector:
+		if col_detector.shape == null: col_detector.shape = RectangleShape2D.new()
+		if col_detector.shape is RectangleShape2D:
+			col_detector.shape.size = tamano_base
 
 	# 2. ACTUALIZAR CABEZA
 	if sprite_cabeza:
@@ -178,6 +197,7 @@ func estado_estirando(delta: float) -> void:
 		for body in cabeza.get_overlapping_bodies():
 			if body != self: 
 				tocando_pared = true
+				estado_actual = Estado.CONTRAYENDO
 				break
 		
 		if not tocando_pared:
@@ -246,5 +266,21 @@ func _on_cabeza_area_area_entered(area: Area2D) -> void:
 		morir()
 
 func morir() -> void:
-	print("El chicle ha tocado una trampa. Fin del juego.")
-	get_tree().reload_current_scene()
+	estado_actual = Estado.NORMAL
+	velocity = Vector2.ZERO
+	direccion_cabeza = Vector2.ZERO
+	
+	# Limpiar el rastro del chicle si murió estirándose
+	puntos_cuerpo = [Vector2.ZERO, Vector2.ZERO]
+	if cabeza: cabeza.position = Vector2.ZERO
+	_actualizar_visibilidad(false)
+	
+	# Teletransportar al inicio del nivel
+	global_position = posicion_inicial
+	
+# Añade esta función para que la base del chicle también muera al tocar trampas o vacío
+func _on_detector_peligro_base_area_entered(area: Area2D) -> void:
+	print("Colisión detectada con: ", area.name)
+	if area.is_in_group("trampas"):
+		print("MUERTE - Reiniciando posición...")
+		morir()
