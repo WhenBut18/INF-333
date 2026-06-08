@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://c85wyfih1a48g"]
+
+[ext_resource type="Script" uid="uid://cotr8a7rrajgt" path="res://bloque_terreno.gd" id="1_q3vsw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rc4sy"]
+
+[node name="BloqueTerreno" type="StaticBody2D" unique_id=1855736786]
+script = ExtResource("1_q3vsw")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=27260901]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=903247706]
+shape = SubResource("RectangleShape2D_rc4sy")

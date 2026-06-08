@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://bpl8u5bysqy1k"]
+
+[ext_resource type="PackedScene" uid="uid://c85wyfih1a48g" path="res://Escenas/NivelesBase/bloque_terreno.tscn" id="1_2b4nq"]
+[ext_resource type="Texture2D" uid="uid://pvvdrvl4lq7" path="res://Sprites/Escenario/images.png" id="2_6wltk"]
+[ext_resource type="PackedScene" uid="uid://bwclq7pv70ono" path="res://Escenas/Personaje/chicle.tscn" id="3_d7a3n"]
+[ext_resource type="Texture2D" uid="uid://cmpbjsc7dabmh" path="res://Sprites/Jugador/PJDEMO.png" id="4_c4d3d"]
+[ext_resource type="Texture2D" uid="uid://kjuoeegyebqm" path="res://Sprites/Jugador/circulo.jpg" id="5_5huxk"]
+[ext_resource type="Texture2D" uid="uid://j2eu5i87nkgh" path="res://Sprites/Jugador/triangulo.jpg" id="6_7aqc3"]
+
+[node name="Node2D" type="Node2D" unique_id=1770357634]
+
+[node name="BloqueTerreno" parent="." unique_id=1855736786 instance=ExtResource("1_2b4nq")]
+position = Vector2(943, 1007)
+tamano_bloque = Vector2(1500, 120)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="BloqueTerreno2" parent="." unique_id=1381853893 instance=ExtResource("1_2b4nq")]
+position = Vector2(1474, 742)
+tamano_bloque = Vector2(200, 100)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="BloqueTerreno3" parent="." unique_id=1780158801 instance=ExtResource("1_2b4nq")]
+position = Vector2(1103, 554)
+tamano_bloque = Vector2(200, 100)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="BloqueTerreno4" parent="." unique_id=459140648 instance=ExtResource("1_2b4nq")]
+position = Vector2(1495, 359)
+tamano_bloque = Vector2(200, 100)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="BloqueTerreno5" parent="." unique_id=1582018934 instance=ExtResource("1_2b4nq")]
+position = Vector2(231, 280)
+tamano_bloque = Vector2(100, 400)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="BloqueTerreno6" parent="." unique_id=1723342402 instance=ExtResource("1_2b4nq")]
+position = Vector2(548, 433)
+tamano_bloque = Vector2(400, 100)
+textura_bloque = ExtResource("2_6wltk")
+
+[node name="Chicle" parent="." unique_id=780736242 instance=ExtResource("3_d7a3n")]
+position = Vector2(970, 884)
+tamano_base = Vector2(100, 100)
+textura_base = ExtResource("4_c4d3d")
+tamano_cabeza = Vector2(70, 70)
+textura_cabeza = ExtResource("5_5huxk")
+tamano_cola = Vector2(70, 70)
+textura_cola = ExtResource("6_7aqc3")
+max_estiramiento = 1000.0

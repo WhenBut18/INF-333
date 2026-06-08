@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bwclq7pv70ono"]
+
+[ext_resource type="Script" uid="uid://br1fbj8y4c7lv" path="res://chicle.gd" id="1_ex8h0"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jhmf7"]
+
+[sub_resource type="Curve" id="Curve_hgc8e"]
+_data = [Vector2(0, 1), 0.0, -5.684427, 0, 0, Vector2(0.50199205, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 5.801177, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ex8h0"]
+
+[node name="Chicle" type="CharacterBody2D" unique_id=780736242]
+script = ExtResource("1_ex8h0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=353683359]
+shape = SubResource("CircleShape2D_jhmf7")
+
+[node name="SpriteBase" type="Sprite2D" parent="." unique_id=1295117637]
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 32)
+
+[node name="SpriteCola" type="Sprite2D" parent="." unique_id=496051992]
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 32)
+
+[node name="CuerpoChicle" type="Line2D" parent="." unique_id=1535203073]
+points = PackedVector2Array(0, 0, 0, 0)
+width_curve = SubResource("Curve_hgc8e")
+
+[node name="CabezaArea" type="Area2D" parent="." unique_id=638238460]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CabezaArea" unique_id=1365381221]
+light_mask = 3
+shape = SubResource("CircleShape2D_ex8h0")
+
+[node name="SpriteCabeza" type="Sprite2D" parent="CabezaArea" unique_id=671970031]
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 32)
