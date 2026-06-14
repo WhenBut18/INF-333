@@ -59,10 +59,6 @@ position = Vector2(507, -50)
 [node name="Area2D3" parent="." unique_id=1624341404 instance=ExtResource("7_5huxk")]
 position = Vector2(1466, -50)
 
-[node name="Area2D5" parent="." unique_id=862966696 instance=ExtResource("7_5huxk")]
-position = Vector2(342, 420)
-dimensiones = Vector2(50, 50)
-
 [node name="Area2D4" parent="." unique_id=1113076124 instance=ExtResource("7_5huxk")]
 position = Vector2(-51, 408)
 dimensiones = Vector2(100, 1000)
