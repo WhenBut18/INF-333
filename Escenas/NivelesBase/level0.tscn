@@ -3,9 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://c85wyfih1a48g" path="res://Escenas/NivelesBase/bloque_terreno.tscn" id="1_2b4nq"]
 [ext_resource type="Texture2D" uid="uid://pvvdrvl4lq7" path="res://Sprites/Escenario/images.png" id="2_6wltk"]
 [ext_resource type="PackedScene" uid="uid://bwclq7pv70ono" path="res://Escenas/Personaje/chicle.tscn" id="3_d7a3n"]
-[ext_resource type="Texture2D" uid="uid://cmpbjsc7dabmh" path="res://Sprites/Jugador/PJDEMO.png" id="4_c4d3d"]
-[ext_resource type="Texture2D" uid="uid://kjuoeegyebqm" path="res://Sprites/Jugador/circulo.jpg" id="5_5huxk"]
-[ext_resource type="Texture2D" uid="uid://j2eu5i87nkgh" path="res://Sprites/Jugador/triangulo.jpg" id="6_7aqc3"]
 [ext_resource type="PackedScene" uid="uid://b66utulkgmusc" path="res://Escenas/NivelesBase/killzone.tscn" id="7_5huxk"]
 
 [node name="Node2D" type="Node2D" unique_id=1770357634]
@@ -64,11 +61,5 @@ position = Vector2(-51, 408)
 dimensiones = Vector2(100, 1000)
 
 [node name="Chicle" parent="." unique_id=780736242 instance=ExtResource("3_d7a3n")]
-position = Vector2(168, 416)
-tamano_base = Vector2(100, 100)
-textura_base = ExtResource("4_c4d3d")
-tamano_cabeza = Vector2(100, 100)
-textura_cabeza = ExtResource("5_5huxk")
-tamano_cola = Vector2(100, 100)
-textura_cola = ExtResource("6_7aqc3")
-max_estiramiento = 1500.0
+position = Vector2(203, 408)
+max_estiramiento = 600.0

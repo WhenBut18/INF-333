@@ -1,19 +1,64 @@
 [gd_scene format=3 uid="uid://bwclq7pv70ono"]
 
 [ext_resource type="Script" uid="uid://br1fbj8y4c7lv" path="res://chicle.gd" id="1_ex8h0"]
+[ext_resource type="Texture2D" uid="uid://cn0gbd2aoyrjw" path="res://Sprites/Jugador/0_Mesa de trabajo 1.png" id="2_dg321"]
+[ext_resource type="Texture2D" uid="uid://bxvpggbgt7s7u" path="res://Sprites/Jugador/base_Mesa de trabajo 1.png" id="2_mb2ro"]
+[ext_resource type="Texture2D" uid="uid://cdgfqlhss5jds" path="res://Sprites/Jugador/1_Mesa de trabajo 1.png" id="3_05xno"]
+[ext_resource type="Texture2D" uid="uid://14mnuwndilxx" path="res://Sprites/Jugador/2_Mesa de trabajo 1.png" id="4_rp71c"]
+[ext_resource type="Texture2D" uid="uid://ceko5rq8gvb0c" path="res://Sprites/Jugador/3_Mesa de trabajo 1.png" id="5_rp71c"]
+[ext_resource type="Texture2D" uid="uid://optc2fmmxi0p" path="res://Sprites/Jugador/4_Mesa de trabajo 1.png" id="6_mb2ro"]
+[ext_resource type="Texture2D" uid="uid://dm2j7xvtqyhk" path="res://Sprites/Jugador/5_Mesa de trabajo 1.png" id="7_tt8nj"]
+[ext_resource type="Texture2D" uid="uid://d3qkm5xmhwtlv" path="res://Sprites/Jugador/6_Mesa de trabajo 1.png" id="8_t2a0m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hgc8e"]
-size = Vector2(100, 100)
+size = Vector2(10, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex8h0"]
-size = Vector2(100, 100)
+size = Vector2(88, 57)
 
-[sub_resource type="Curve" id="Curve_hgc8e"]
-_data = [Vector2(0, 1), 0.0, -5.684427, 0, 0, Vector2(0.50199205, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 5.801177, 0.0, 0, 0]
-point_count = 3
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_a75xx"]
+load_path = "res://.godot/imported/1_Mesa de trabajo 1.png-296704319cfb77914075a59a3a04f2af.ctex"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jhmf7"]
-size = Vector2(100, 100)
+size = Vector2(62, 53.5)
+
+[sub_resource type="Animation" id="Animation_oa5kg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteBase:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [SubResource("CompressedTexture2D_a75xx")]
+}
+
+[sub_resource type="Animation" id="Animation_jhmf7"]
+resource_name = "idle"
+length = 1.0666667
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteBase:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0001, 0.06666667, 0.13333334, 0.2, 0.26666668, 0.33333334, 0.4, 0.53333336, 0.6, 0.6666667, 0.73333335, 0.8, 0.8666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("2_dg321"), ExtResource("3_05xno"), ExtResource("4_rp71c"), ExtResource("5_rp71c"), ExtResource("6_mb2ro"), ExtResource("7_tt8nj"), ExtResource("8_t2a0m"), ExtResource("7_tt8nj"), ExtResource("6_mb2ro"), ExtResource("5_rp71c"), ExtResource("4_rp71c"), ExtResource("3_05xno"), ExtResource("2_dg321")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hgc8e"]
+_data = {
+&"RESET": SubResource("Animation_oa5kg"),
+&"idle": SubResource("Animation_jhmf7")
+}
 
 [node name="Chicle" type="CharacterBody2D" unique_id=780736242]
 script = ExtResource("1_ex8h0")
@@ -24,26 +69,41 @@ script = ExtResource("1_ex8h0")
 shape = SubResource("RectangleShape2D_hgc8e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=353683359]
+position = Vector2(0, 18.5)
 shape = SubResource("RectangleShape2D_ex8h0")
 
 [node name="SpriteBase" type="Sprite2D" parent="." unique_id=1295117637]
+visible = false
+scale = Vector2(0.045, 0.045)
+texture = SubResource("CompressedTexture2D_a75xx")
 region_rect = Rect2(0, 0, 32, 32)
 
 [node name="SpriteCola" type="Sprite2D" parent="." unique_id=496051992]
+position = Vector2(7.1525574e-07, -1.1920929e-07)
+scale = Vector2(0.044, 0.044)
+texture = ExtResource("2_mb2ro")
 region_rect = Rect2(0, 0, 32, 32)
 
 [node name="CuerpoChicle" type="Line2D" parent="." unique_id=1535203073]
-points = PackedVector2Array(0, 0, 0, 0)
-width_curve = SubResource("Curve_hgc8e")
+z_index = -1
+position = Vector2(4, 6)
+points = PackedVector2Array(0, 30, 0, 27)
 
 [node name="CabezaArea" type="Area2D" parent="." unique_id=638238460]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CabezaArea" unique_id=1365381221]
 light_mask = 3
+position = Vector2(0, 6)
 shape = SubResource("RectangleShape2D_jhmf7")
 
 [node name="SpriteCabeza" type="Sprite2D" parent="CabezaArea" unique_id=671970031]
+position = Vector2(-8.381903e-08, -28.555)
+scale = Vector2(0.045, 0.056089252)
+texture = ExtResource("2_dg321")
 region_rect = Rect2(0, 0, 32, 32)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1011616568]
+libraries/ = SubResource("AnimationLibrary_hgc8e")
 
 [connection signal="area_entered" from="DetectorPeligroBase" to="." method="_on_detector_peligro_base_area_entered"]
 [connection signal="area_entered" from="CabezaArea" to="." method="_on_cabeza_area_area_entered"]

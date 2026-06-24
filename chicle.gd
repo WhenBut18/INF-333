@@ -1,40 +1,4 @@
-@tool
 extends CharacterBody2D
-
-# ==========================================
-# CONFIGURACIÓN DEL INSPECTOR
-# ==========================================
-
-@export_group("Base (Personaje Normal)")
-@export var tamano_base: Vector2 = Vector2(32, 32):
-	set(value):
-		tamano_base = value
-		_actualizar_tamano()
-@export var textura_base: Texture2D:
-	set(value):
-		textura_base = value
-		_actualizar_tamano()
-
-@export_group("Cabeza (Parte Estirable)")
-@export var tamano_cabeza: Vector2 = Vector2(32, 32):
-	set(value):
-		tamano_cabeza = value
-		_actualizar_tamano()
-@export var textura_cabeza: Texture2D:
-	set(value):
-		textura_cabeza = value
-		_actualizar_tamano()
-
-@export_group("Cola (Punto de anclaje)")
-@export var tamano_cola: Vector2 = Vector2(32, 32):
-	set(value):
-		tamano_cola = value
-		_actualizar_tamano()
-@export var textura_cola: Texture2D:
-	set(value):
-		textura_cola = value
-		_actualizar_tamano()
-
 
 # ==========================================
 # ESTADOS Y PARÁMETROS DE JUEGO
@@ -51,7 +15,7 @@ var posicion_inicial: Vector2
 @export var max_estiramiento: float = 300.0
 @export var gravedad: float = 980.0
 
-# --- NUEVAS VARIABLES PARA EL MOVIMIENTO TIPO SNAKE ---
+# --- VARIABLES PARA EL MOVIMIENTO TIPO SNAKE ---
 var puntos_cuerpo: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
 var direccion_cabeza: Vector2 = Vector2.ZERO
 
@@ -65,85 +29,34 @@ var direccion_cabeza: Vector2 = Vector2.ZERO
 @onready var cabeza = $CabezaArea
 @onready var colision_cabeza = $CabezaArea/CollisionShape2D
 @onready var sprite_cabeza = $CabezaArea/SpriteCabeza
-# Referencia dinámica a la colisión del detector de la base (puede ser nula antes del _ready)
 @onready var colision_detector_base = get_node_or_null("DetectorPeligroBase/CollisionShape2D")
+@onready var anim_player = get_node_or_null("AnimationPlayer")
 
 func _ready() -> void:
 	posicion_inicial = global_position
 	
-	if colision_base != null:
-		if colision_base.shape == null: colision_base.shape = RectangleShape2D.new()
-		elif not Engine.is_editor_hint(): colision_base.shape = colision_base.shape.duplicate()
-			
-	if colision_cabeza != null:
-		if colision_cabeza.shape == null: colision_cabeza.shape = RectangleShape2D.new()
-		elif not Engine.is_editor_hint(): colision_cabeza.shape = colision_cabeza.shape.duplicate()
+	if linea:
+		linea.width = 79.0 # Ajusta este número al tamaño real de tu sprite
 		
-	# Sincronizamos e independizamos la colisión del detector de peligros de la base
-	if colision_detector_base != null:
-		if colision_detector_base.shape == null: colision_detector_base.shape = RectangleShape2D.new()
-		elif not Engine.is_editor_hint(): colision_detector_base.shape = colision_detector_base.shape.duplicate()
-			
-	_actualizar_tamano()
-	
-	if not Engine.is_editor_hint():
-		_actualizar_visibilidad(false)
-
-func _actualizar_tamano() -> void:
-	if not is_inside_tree():
-		return
+		# 1. ESTO ES CLAVE: Elimina cualquier curva que haga que la línea se encoja en el centro
+		linea.width_curve = null 
 		
-	# 1. ACTUALIZAR BASE
-	if sprite_base:
-		sprite_base.region_enabled = false
-		if textura_base: sprite_base.texture = textura_base
-		if sprite_base.texture:
-			var tex_size = sprite_base.texture.get_size()
-			if tex_size.x > 0 and tex_size.y > 0:
-				sprite_base.scale = tamano_base / tex_size
-				
-	if colision_base and colision_base.shape is RectangleShape2D:
-		colision_base.shape.size = tamano_base
+		# 2. Cambiamos SHARP por ROUND. Al ser un "chicle", la esquina redondeada se ve mejor
+		# y evita que el motor gráfico rompa los vértices en ángulos de 90 grados.
+		linea.joint_mode = Line2D.LINE_JOINT_ROUND 
 		
-	# Actualizar la colisión del DetectorPeligroBase
-	# Usamos get_node_or_null aquí por si la función es llamada desde el Inspector antes de que exista la variable @onready
-	var col_detector = get_node_or_null("DetectorPeligroBase/CollisionShape2D")
-	if col_detector:
-		if col_detector.shape == null: col_detector.shape = RectangleShape2D.new()
-		if col_detector.shape is RectangleShape2D:
-			col_detector.shape.size = tamano_base
-
-	# 2. ACTUALIZAR CABEZA
-	if sprite_cabeza:
-		sprite_cabeza.region_enabled = false
-		if textura_cabeza: sprite_cabeza.texture = textura_cabeza
-		if sprite_cabeza.texture:
-			var tex_size = sprite_cabeza.texture.get_size()
-			if tex_size.x > 0 and tex_size.y > 0:
-				sprite_cabeza.scale = tamano_cabeza / tex_size
-				
-	if colision_cabeza:
-		if colision_cabeza.shape == null: colision_cabeza.shape = RectangleShape2D.new()
-		if colision_cabeza.shape is RectangleShape2D:
-			colision_cabeza.shape.size = tamano_cabeza
-
-	# 3. ACTUALIZAR COLA
-	if sprite_cola:
-		sprite_cola.region_enabled = false
-		if textura_cola: sprite_cola.texture = textura_cola
-		if sprite_cola.texture:
-			var tex_size = sprite_cola.texture.get_size()
-			if tex_size.x > 0 and tex_size.y > 0:
-				sprite_cola.scale = tamano_cola / tex_size
+		linea.begin_cap_mode = Line2D.LINE_CAP_NONE
+		linea.end_cap_mode = Line2D.LINE_CAP_NONE
+		
+	_actualizar_visibilidad(false)
+	if anim_player:
+		anim_player.play("idle")
 
 # ==========================================
 # LÓGICA DE FÍSICAS Y ESTADOS
 # ==========================================
 
 func _physics_process(delta: float) -> void:
-	if Engine.is_editor_hint():
-		return 
-
 	match estado_actual:
 		Estado.NORMAL:
 			estado_normal(delta)
@@ -246,6 +159,7 @@ func estado_contrayendo(delta: float) -> void:
 	if puntos_cuerpo.size() <= 1:
 		puntos_cuerpo = [Vector2.ZERO, Vector2.ZERO]
 		cabeza.position = Vector2.ZERO
+		direccion_cabeza = Vector2.ZERO # <-- NUEVO: Reseteamos la dirección de la cabeza
 		estado_actual = Estado.NORMAL
 		_actualizar_visibilidad(false)
 
@@ -255,6 +169,14 @@ func actualizar_visuales() -> void:
 		for p in puntos_cuerpo:
 			linea.add_point(p)
 
+	# 2. Rotar la cabeza según la dirección o resetearla
+	if cabeza:
+		if direccion_cabeza != Vector2.ZERO:
+			cabeza.rotation = direccion_cabeza.angle() + (PI/2)
+		else:
+			cabeza.rotation = 0.0
+			
+			
 func _actualizar_visibilidad(estirando: bool) -> void:
 	if sprite_base: sprite_base.visible = not estirando
 	if sprite_cabeza: sprite_cabeza.visible = estirando
@@ -278,7 +200,6 @@ func morir() -> void:
 	# Teletransportar al inicio del nivel
 	global_position = posicion_inicial
 	
-# Añade esta función para que la base del chicle también muera al tocar trampas o vacío
 func _on_detector_peligro_base_area_entered(area: Area2D) -> void:
 	print("Colisión detectada con: ", area.name)
 	if area.is_in_group("trampas"):
