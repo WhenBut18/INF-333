@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var aumento_estiramiento: float = 300.0
+@export var aumento_estiramiento: float = 250.0
 @export var multiplicador_escala := 1.15
 
 func _on_area_entered(area):

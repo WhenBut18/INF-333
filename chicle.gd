@@ -12,9 +12,11 @@ var posicion_inicial: Vector2
 @export var velocidad_movimiento: float = 200.0
 @export var velocidad_estiramiento: float = 800.0
 @export var velocidad_contraccion: float = 800.0
-@export var max_estiramiento: float = 100.0
 @export var gravedad: float = 980.0
-
+@export_group("Stretch")
+@export_range(50.0, 2000.0, 10.0)
+var max_estiramiento: float = 350.0
+var linewidth = 79
 # --- VARIABLES PARA EL MOVIMIENTO TIPO SNAKE ---
 var puntos_cuerpo: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
 var direccion_cabeza: Vector2 = Vector2.ZERO
@@ -41,7 +43,7 @@ func _ready() -> void:
 	posicion_inicial = global_position
 	
 	if linea:
-		linea.width = 79 # Ajusta este número al tamaño real de tu sprite
+		linea.width = linewidth # Ajusta este número al tamaño real de tu sprite
 		
 		# 1. ESTO ES CLAVE: Elimina cualquier curva que haga que la línea se encoja en el centro
 		linea.width_curve = null 
@@ -82,6 +84,7 @@ func estado_normal(delta: float) -> void:
 	move_and_slide()
 
 	if Input.is_action_just_pressed("ui_accept"): 
+		primer_movimiento = true
 		if is_on_floor() and abs(velocity.x) < 10.0:
 			estado_actual = Estado.ESTIRANDO
 			velocity = Vector2.ZERO 
@@ -97,7 +100,6 @@ func estado_normal(delta: float) -> void:
 func estado_estirando(delta: float) -> void:
 	stretch_sound.play()
 	var input_dir = Vector2.ZERO
-	primer_movimiento = true
 	
 	# Forzamos direcciones ortogonales (una a la vez) para ángulos rectos
 	if Input.is_action_pressed("ui_right"): input_dir = Vector2.RIGHT
@@ -138,8 +140,17 @@ func estado_estirando(delta: float) -> void:
 			var exceso = longitud_total - max_estiramiento
 			puntos_cuerpo[-1] -= direccion_cabeza * exceso # Acortamos el último segmento
 			
+			var nueva_longitud := 0.0
+			for i in range(1, puntos_cuerpo.size()):
+				nueva_longitud += puntos_cuerpo[i-1].distance_to(puntos_cuerpo[i])
+			
 		cabeza.position = puntos_cuerpo[-1]
-
+		print("Length = ", longitud_total, " Max = ", max_estiramiento)
+		if linea:
+			var min_width := 10.0
+			var max_width := 79.0
+			linea.width = lerp(max_width, min_width, longitud_total / max_estiramiento)
+	
 	if Input.is_action_just_released("ui_accept"):
 		estado_actual = Estado.CONTRAYENDO
 		
@@ -189,7 +200,7 @@ func recoger_chicle(aumento_estiramiento: float, multiplicador: float) -> void:
 	colision_base.scale *= multiplicador
 	colision_cabeza.scale *= multiplicador
 
-	linea.width *= multiplicador
+	linewidth *= multiplicador
 
 func actualizar_visuales() -> void:
 	if linea:
