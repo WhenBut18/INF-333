@@ -10,16 +10,14 @@ var posicion_inicial: Vector2
 
 @export_group("Físicas y Movimiento")
 @export var velocidad_movimiento: float = 200.0
-@export var velocidad_estiramiento: float = 800.0
+@export var velocidad_estiramiento: float = 400.0
 @export var velocidad_contraccion: float = 800.0
-@export var max_estiramiento: float = 100.0
+@export var max_estiramiento: float = 300.0
 @export var gravedad: float = 980.0
 
 # --- VARIABLES PARA EL MOVIMIENTO TIPO SNAKE ---
 var puntos_cuerpo: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
 var direccion_cabeza: Vector2 = Vector2.ZERO
-var direccion_base: Vector2 = Vector2.ZERO
-var primer_movimiento := true
 
 # ==========================================
 # REFERENCIAS A NODOS
@@ -33,15 +31,12 @@ var primer_movimiento := true
 @onready var sprite_cabeza = $CabezaArea/SpriteCabeza
 @onready var colision_detector_base = get_node_or_null("DetectorPeligroBase/CollisionShape2D")
 @onready var anim_player = get_node_or_null("AnimationPlayer")
-@onready var gameplay_music = get_parent().get_node("Music")
-@onready var death_sound = $DeathSound
-@onready var stretch_sound = $StretchSound
 
 func _ready() -> void:
 	posicion_inicial = global_position
 	
 	if linea:
-		linea.width = 79 # Ajusta este número al tamaño real de tu sprite
+		linea.width = 79.0 # Ajusta este número al tamaño real de tu sprite
 		
 		# 1. ESTO ES CLAVE: Elimina cualquier curva que haga que la línea se encoja en el centro
 		linea.width_curve = null 
@@ -73,7 +68,6 @@ func _physics_process(delta: float) -> void:
 	actualizar_visuales()
 
 func estado_normal(delta: float) -> void:
-	stretch_sound.stop()
 	if not is_on_floor():
 		velocity.y += gravedad * delta
 	else:
@@ -89,15 +83,12 @@ func estado_normal(delta: float) -> void:
 			# Reiniciamos el cuerpo estilo snake
 			puntos_cuerpo = [Vector2.ZERO, Vector2.ZERO]
 			direccion_cabeza = Vector2.ZERO
-			direccion_base = Vector2.ZERO
 			cabeza.position = Vector2.ZERO
 			
 			_actualizar_visibilidad(true)
 
 func estado_estirando(delta: float) -> void:
-	stretch_sound.play()
 	var input_dir = Vector2.ZERO
-	primer_movimiento = true
 	
 	# Forzamos direcciones ortogonales (una a la vez) para ángulos rectos
 	if Input.is_action_pressed("ui_right"): input_dir = Vector2.RIGHT
@@ -107,11 +98,7 @@ func estado_estirando(delta: float) -> void:
 	
 	if input_dir != Vector2.ZERO:
 		if direccion_cabeza == Vector2.ZERO:
-			if primer_movimiento and (input_dir == Vector2.LEFT or input_dir == Vector2.RIGHT):
-				puntos_cuerpo.insert(1, Vector2.UP * 1.0) # tamaño de una celda/tile
-
 			direccion_cabeza = input_dir
-			primer_movimiento = false
 		# Si cambiamos de dirección (y no es exactamente la contraria)
 		elif input_dir != direccion_cabeza and input_dir != -direccion_cabeza:
 			# Creamos una nueva esquina agregando un punto al final
@@ -142,54 +129,39 @@ func estado_estirando(delta: float) -> void:
 
 	if Input.is_action_just_released("ui_accept"):
 		estado_actual = Estado.CONTRAYENDO
-		
+
 func estado_contrayendo(delta: float) -> void:
 	if puntos_cuerpo.size() > 1:
-		var target_local = puntos_cuerpo[1]
+		var target_local = puntos_cuerpo[1] # El siguiente punto o esquina
 		var distance_to_target = target_local.length()
 		var step = velocidad_contraccion * delta
-
-		# Dirección actual de la base
-		if distance_to_target > 0.001:
-			direccion_base = target_local.normalized()
-
+		
 		if distance_to_target <= step:
-			# Llegamos a la esquina
+			# Llegamos a la esquina, la base se ajusta
 			global_position += target_local
 			var diff = target_local
-			puntos_cuerpo.remove_at(1)
-
+			puntos_cuerpo.remove_at(1) # Borramos la esquina (nos la "comimos")
+			
+			# Desplazamos todos los puntos para mantenerlos relativos a la nueva posición de la base
 			for i in range(1, puntos_cuerpo.size()):
 				puntos_cuerpo[i] -= diff
 		else:
 			# Nos acercamos a la esquina
 			var move_vec = target_local.normalized() * step
 			global_position += move_vec
-
+			
 			for i in range(1, puntos_cuerpo.size()):
 				puntos_cuerpo[i] -= move_vec
 
 		cabeza.position = puntos_cuerpo[-1]
-
+		
+	# Si ya solo queda la cabeza (se contrajo todo)
 	if puntos_cuerpo.size() <= 1:
 		puntos_cuerpo = [Vector2.ZERO, Vector2.ZERO]
 		cabeza.position = Vector2.ZERO
-		direccion_cabeza = Vector2.ZERO
-		direccion_base = Vector2.ZERO
+		direccion_cabeza = Vector2.ZERO # <-- NUEVO: Reseteamos la dirección de la cabeza
 		estado_actual = Estado.NORMAL
-		_actualizar_visibilidad(false)	
-
-func recoger_chicle(aumento_estiramiento: float, multiplicador: float) -> void:
-	max_estiramiento += aumento_estiramiento
-
-	sprite_base.scale *= multiplicador
-	sprite_cabeza.scale *= multiplicador
-	sprite_cola.scale *= multiplicador
-
-	colision_base.scale *= multiplicador
-	colision_cabeza.scale *= multiplicador
-
-	linea.width *= multiplicador
+		_actualizar_visibilidad(false)
 
 func actualizar_visuales() -> void:
 	if linea:
@@ -204,12 +176,7 @@ func actualizar_visuales() -> void:
 		else:
 			cabeza.rotation = 0.0
 			
-	if sprite_cola:
-		if direccion_base != Vector2.ZERO:
-			sprite_cola.rotation = direccion_base.angle() + (PI/2)
-		else:
-			sprite_cola.rotation = 0.0
-					
+			
 func _actualizar_visibilidad(estirando: bool) -> void:
 	if sprite_base: sprite_base.visible = not estirando
 	if sprite_cabeza: sprite_cabeza.visible = estirando
@@ -221,25 +188,17 @@ func _on_cabeza_area_area_entered(area: Area2D) -> void:
 		morir()
 
 func morir() -> void:
-	if gameplay_music:
-		gameplay_music.stop() # or gameplay_music.stream_paused = true
-	if death_sound:
-		death_sound.play()
-	visible = false
-	set_physics_process(false)
 	estado_actual = Estado.NORMAL
 	velocity = Vector2.ZERO
 	direccion_cabeza = Vector2.ZERO
+	
+	# Limpiar el rastro del chicle si murió estirándose
 	puntos_cuerpo = [Vector2.ZERO, Vector2.ZERO]
-	if cabeza:
-		cabeza.position = Vector2.ZERO
+	if cabeza: cabeza.position = Vector2.ZERO
 	_actualizar_visibilidad(false)
-	await get_tree().create_timer(3.0).timeout
+	
+	# Teletransportar al inicio del nivel
 	global_position = posicion_inicial
-	visible = true
-	set_physics_process(true)
-	if gameplay_music:
-		gameplay_music.play() # or gameplay_music.stream_paused = false
 	
 func _on_detector_peligro_base_area_entered(area: Area2D) -> void:
 	print("Colisión detectada con: ", area.name)
