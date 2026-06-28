@@ -15,7 +15,7 @@ var posicion_inicial: Vector2
 @export var gravedad: float = 980.0
 @export_group("Stretch")
 @export_range(50.0, 2000.0, 10.0)
-var max_estiramiento: float = 350.0
+var max_estiramiento: float = 700.0
 var linewidth = 79
 # --- VARIABLES PARA EL MOVIMIENTO TIPO SNAKE ---
 var puntos_cuerpo: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
@@ -149,8 +149,9 @@ func estado_estirando(delta: float) -> void:
 		if linea:
 			var min_width := 10.0
 			var max_width := 79.0
-			linea.width = lerp(max_width, min_width, longitud_total / max_estiramiento)
-	
+			#linea.width = lerp(max_width, min_width, longitud_total / max_estiramiento)
+			linea.width = 79
+			
 	if Input.is_action_just_released("ui_accept"):
 		estado_actual = Estado.CONTRAYENDO
 		

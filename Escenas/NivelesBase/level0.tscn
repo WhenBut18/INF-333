@@ -4,13 +4,8 @@
 [ext_resource type="Script" uid="uid://u3rrb4sc7ekb" path="res://Escenas/NivelesBase/Stage.gd" id="1_7aqc3"]
 [ext_resource type="Texture2D" uid="uid://pvvdrvl4lq7" path="res://Sprites/Escenario/images.png" id="2_6wltk"]
 [ext_resource type="PackedScene" uid="uid://bwclq7pv70ono" path="res://Escenas/Personaje/chicle.tscn" id="3_d7a3n"]
-[ext_resource type="Script" uid="uid://d6unkhbjvvt4" path="res://Escenas/NivelesBase/GumCollectible.gd" id="5_d7a3n"]
-[ext_resource type="Texture2D" uid="uid://dl87hdvwrhoc3" path="res://Sprites/Escenario/gumpiece.png" id="6_c4d3d"]
 [ext_resource type="PackedScene" uid="uid://b66utulkgmusc" path="res://Escenas/NivelesBase/killzone.tscn" id="7_5huxk"]
 [ext_resource type="AudioStream" uid="uid://c4x045w71r53y" path="res://music.mp3" id="8_sbwrb"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8jhbd"]
-size = Vector2(64, 60.5)
 
 [node name="Node2D" type="Node2D" unique_id=1770357634]
 script = ExtResource("1_7aqc3")
@@ -72,20 +67,6 @@ dimensiones = Vector2(100, 1000)
 [node name="Chicle" parent="." unique_id=780736242 instance=ExtResource("3_d7a3n")]
 position = Vector2(203, 408)
 
-[node name="GumPiece1" type="Area2D" parent="." unique_id=1628219051]
-script = ExtResource("5_d7a3n")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GumPiece1" unique_id=1033245838]
-position = Vector2(1818, 526)
-shape = SubResource("RectangleShape2D_8jhbd")
-
-[node name="Sprite2D" type="Sprite2D" parent="GumPiece1" unique_id=667983278]
-position = Vector2(1819, 527)
-scale = Vector2(0.018888839, 0.021555636)
-texture = ExtResource("6_c4d3d")
-
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=170033249]
 stream = ExtResource("8_sbwrb")
-volume_db = -80.0
-
-[connection signal="area_entered" from="GumPiece1" to="GumPiece1" method="_on_area_entered"]
+volume_db = -20.0
